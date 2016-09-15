@@ -68,7 +68,7 @@ class Tetris {
       this.board.push([]);
     }
 
-    //Fill default board with 0 and set the boarder on the left/right/bottom
+    //Fill default board with 0 and set the border on the left/right/bottom
     for (let i=0; i<this.row; i++) {
       for (let j=0; j<this.col; j++) {
         if (j === 0 || j >= this.col-1 || i >= this.row-1)  // Leave an empty line on board
@@ -97,7 +97,7 @@ class Tetris {
             c = ' ';
           else if (this.board[i][j] === 1) //Filled with block
             c = '#';
-          else if (this.board[i][j] === -1)  //left and right boarder
+          else if (this.board[i][j] === -1)  //left and right border
             c = '@';
 
           content += c;
