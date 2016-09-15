@@ -98,7 +98,7 @@ class Tetris {
           else if (this.board[i][j] === 1) //Filled with block
             c = '#';
           else if (this.board[i][j] === -1)  //left and right boarder
-            c = '\u2016'; //Double vertical line symbol in unicode
+            c = '@';
 
           content += c;
         }
