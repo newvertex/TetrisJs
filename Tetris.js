@@ -275,7 +275,8 @@ class Tetris {
 
     // Start game
     if (keyname == 'return') {
-
+      this.init();
+      this.createBlock();
     }
 
   }
@@ -283,34 +284,36 @@ class Tetris {
   static play () {
     let game = new Tetris();
 
-    //Check if can access to document(Run inside browser or as NodeJs console App!)
-    if(document) {
+    //Check if can access to document(Run inside browser)
+    if(typeof(document) !== 'undefined') {
       var menuHandler = null; //Menu handler to settimeout
       var gameLoopHandler = null; //GameLoop Handler for setinterval
       game.output = document.querySelector('#view');  //Main output section
 
       //Blink start text like menu
       function showMenu(show=true) {
-        let startText = document.querySelector('#startText');
-        if (show) {
-          if (startText) {
-            startText.style.color = startText.style.color== 'gray' ? 'black':'gray';
-          } else {
-            startText = document.createElement('h3');
-            startText.id = 'startText';
-            startText.innerHTML = 'Press Enter to start game';
-            view.innerHTML = '';
-            view.appendChild(startText);
-          }
+        if (typeof(document) !== 'undefined') {
+          let startText = document.querySelector('#startText');
+          if (show) {
+            if (startText) {
+              startText.style.color = startText.style.color== 'gray' ? 'black':'gray';
+            } else {
+              startText = document.createElement('h3');
+              startText.id = 'startText';
+              startText.innerHTML = 'Press Enter to start game';
+              view.innerHTML = '';
+              view.appendChild(startText);
+            }
 
-          menuHandler = setTimeout(showMenu, 500);
-        } else {
-          clearTimeout(menuHandler);
-          menuHandler = null;
-          startText.remove();
+            menuHandler = setTimeout(showMenu, 500);
+          } else {
+            clearTimeout(menuHandler);
+            menuHandler = null;
+            startText.remove();
+          }
         }
       }
-      showMenu();
+      // showMenu();
 
       document.addEventListener('keydown', function (event) {
         let keyname = '';
@@ -340,11 +343,6 @@ class Tetris {
 
         //Stop Menu and go to gameloop after press Return key
         if (event.keyCode == '13') {
-          if (menuHandler) {
-            showMenu(false);
-            game.init();
-            game.createBlock();
-
             gameLoopHandler = setInterval(function() {
               if (game.gameOver) {
                 game.drawBoard();
@@ -358,8 +356,6 @@ class Tetris {
                 game.createBlock();
               }
             }, game.ticks);
-          }
-
         }
 
         //Stop gameloop and show the menu with ESC key
@@ -368,8 +364,6 @@ class Tetris {
             clearInterval(gameLoopHandler);
             gameLoopHandler = null;
           }
-          if (!menuHandler)
-            showMenu();
         }
 
         if(gameLoopHandler)
@@ -384,13 +378,19 @@ class Tetris {
 // Use this just for test control on Node.js
 if (typeof(document) === 'undefined') {
   console.log('hello from node.js');
+  // Active keypress event and check it
   var readline = require('readline');
+
   readline.emitKeypressEvents(process.stdin);
+
   if (process.stdin.isTTY)
     process.stdin.setRawMode(true);
 
   process.stdin.on('keypress', (chunk, key) => {
-    if(key)
-      console.log(`key : ${key.name}`);
+    process.stdout.write(`key: ${key.name}`);
+    if(key && key.name == 'q') {
+      process.stdout.write('\nQuit, come back again ;-)\n');
+      process.exit();
+    }
   });
 }
