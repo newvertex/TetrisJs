@@ -247,29 +247,37 @@ class Tetris {
   }
 
   //Get event and check the keyCode to move the current block
-  controlBlock(keyCode) {
+  controlBlock(keyname) {
     //Move Right
-    if (keyCode == '39') {
-      // if (this.canMove(1, 0))
+    if (keyname == 'right') {
         this.moveBlock(1, 0);
     }
 
     //Move Left
-    if (keyCode == '37') {
-      // if (this.canMove(-1, 0))
+    if (keyname == 'left') {
         this.moveBlock(-1, 0);
     }
 
     //Move Down
-    if (keyCode == '40') {
-      // if (this.canMove(0, 1))
+    if (keyname == 'down') {
         this.moveBlock(0, 1);
     }
 
     //Turn the block
-    if (keyCode == '32') {
+    if (keyname == 'space') {
       this.turnBlock();
     }
+
+    // Back to menu
+    if (keyname == 'escape') {
+
+    }
+
+    // Start game
+    if (keyname == 'return') {
+
+    }
+
   }
 
   static play () {
@@ -305,6 +313,31 @@ class Tetris {
       showMenu();
 
       document.addEventListener('keydown', function (event) {
+        let keyname = '';
+
+        switch (event.keyCode) {
+          case 13:
+            keyname = 'return';
+            break;
+          case 27:
+            keyname = 'escape';
+            break;
+          case 32:
+            keyname = 'space';
+            break;
+          case 39:
+            keyname = 'right';
+            break;
+          case 37:
+            keyname = 'left';
+            break;
+          case 40:
+            keyname = 'down';
+            break;
+        }
+
+        game.controlBlock(keyname);
+
         //Stop Menu and go to gameloop after press Return key
         if (event.keyCode == '13') {
           if (menuHandler) {
@@ -346,4 +379,18 @@ class Tetris {
 
     }
   }
+}
+
+// Use this just for test control on Node.js
+if (typeof(document) === 'undefined') {
+  console.log('hello from node.js');
+  var readline = require('readline');
+  readline.emitKeypressEvents(process.stdin);
+  if (process.stdin.isTTY)
+    process.stdin.setRawMode(true);
+
+  process.stdin.on('keypress', (chunk, key) => {
+    if(key)
+      console.log(`key : ${key.name}`);
+  });
 }
