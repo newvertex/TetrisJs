@@ -53,6 +53,9 @@ class Tetris {
 
       //Keep current block that we can control it
       this.currentblock = this.blocks[0][0];
+
+      this.gameLoopHandler = null;
+      this.menuHandler = null;
   }
 
   //Initialize and reset
@@ -107,9 +110,14 @@ class Tetris {
 
       content += ' Left, Right \n Down, Space';
     }
-    //Write the board directly to the output tag(With this we can call draw from every wehre)
-    if (this.output)
-      this.output.innerHTML = content;
+
+    if (typeof(document) !== 'undefined') {
+      //Write the board directly to the output tag(With this we can call draw from every wehre)
+      if (this.output)
+        this.output.innerHTML = content;
+    } else {  // Write in console
+      process.stdout.write(content);
+    }
 
     return content;
   }
@@ -248,6 +256,7 @@ class Tetris {
 
   //Get event and check the keyCode to move the current block
   controlBlock(keyname) {
+    // Check if in game loop then check the block control key
     if (this.gameLoopHandler) {
       //Move Right
       if (keyname == 'right') {
@@ -338,16 +347,22 @@ class Tetris {
         }
       } else {  // Console menu
         // TODO: A simple menu on here to show on console
+        if (show) {
+          game.menuHandler = 'x';
+          process.stdout.write("Press Enter to Start game\n `q` to quit!");
+        } else {
+          game.menuHandler = null;
+        }
       }
     }
+
+    // Show menu on start the game
+    game.showMenu();
 
     //Check if can access to document(Run inside browser)
     if(typeof(document) !== 'undefined') {
       //Main output tag element for draw method
       game.output = document.querySelector('#view');
-
-      // Show menu on start the game
-      game.showMenu();
 
       document.addEventListener('keydown', function (event) {
         let keyname = '';
@@ -376,26 +391,25 @@ class Tetris {
         game.controlBlock(keyname);
       });
 
+    } else {  // Check console keypress events
+      var readline = require('readline');
+
+      readline.emitKeypressEvents(process.stdin);
+      if (process.stdin.isTTY)
+        process.stdin.setRawMode(true);
+
+      process.stdin.on('keypress', (chunk, key) => {
+        if (key) {
+          if (key.name == 'q') {
+            process.exit();
+          } else {
+            game.controlBlock(key.name);
+          }
+        }
+      });
+
     }
   }
 }
 
-// Use this just for test control on Node.js
-if (typeof(document) === 'undefined') {
-  console.log('hello from node.js');
-  // Active keypress event and check it
-  var readline = require('readline');
-
-  readline.emitKeypressEvents(process.stdin);
-
-  if (process.stdin.isTTY)
-    process.stdin.setRawMode(true);
-
-  process.stdin.on('keypress', (chunk, key) => {
-    process.stdout.write(`key: ${key.name}`);
-    if(key && key.name == 'q') {
-      process.stdout.write('\nQuit, come back again ;-)\n');
-      process.exit();
-    }
-  });
-}
+Tetris.play();
