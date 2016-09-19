@@ -275,8 +275,25 @@ class Tetris {
 
     // Start game
     if (keyname == 'return') {
-      this.init();
-      this.createBlock();
+      if (!this.gameLoopHandler) {
+        this.init();
+        this.createBlock();
+
+        this.gameLoopHandler = setInterval(() => {
+          if (this.gameOver) {
+            this.drawBoard();
+            clearInterval(this.gameLoopHandler);
+            this.gameLoopHandler = null;
+          }
+
+          //Make Block if move it can if not then check filled row and create new block
+          if (!this.moveBlock(0, 1)) {
+            this.checkLine();
+            this.createBlock();
+          }
+        }, this.ticks);
+
+      }
     }
 
   }
@@ -340,23 +357,6 @@ class Tetris {
         }
 
         game.controlBlock(keyname);
-
-        //Stop Menu and go to gameloop after press Return key
-        if (event.keyCode == '13') {
-            gameLoopHandler = setInterval(function() {
-              if (game.gameOver) {
-                game.drawBoard();
-                clearInterval(gameLoopHandler);
-                gameLoopHandler = null;
-              }
-
-              //Make Block if move it can if not then check filled row and create new block
-              if (!game.moveBlock(0, 1)) {
-                game.checkLine();
-                game.createBlock();
-              }
-            }, game.ticks);
-        }
 
         //Stop gameloop and show the menu with ESC key
         if (event.keyCode == '27') {
