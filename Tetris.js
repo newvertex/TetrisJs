@@ -248,24 +248,26 @@ class Tetris {
 
   //Get event and check the keyCode to move the current block
   controlBlock(keyname) {
-    //Move Right
-    if (keyname == 'right') {
-        this.moveBlock(1, 0);
-    }
+    if (this.gameLoopHandler) {
+      //Move Right
+      if (keyname == 'right') {
+          this.moveBlock(1, 0);
+      }
 
-    //Move Left
-    if (keyname == 'left') {
-        this.moveBlock(-1, 0);
-    }
+      //Move Left
+      if (keyname == 'left') {
+          this.moveBlock(-1, 0);
+      }
 
-    //Move Down
-    if (keyname == 'down') {
-        this.moveBlock(0, 1);
-    }
+      //Move Down
+      if (keyname == 'down') {
+          this.moveBlock(0, 1);
+      }
 
-    //Turn the block
-    if (keyname == 'space') {
-      this.turnBlock();
+      //Turn the block
+      if (keyname == 'space') {
+        this.turnBlock();
+      }
     }
 
     // Back to menu
