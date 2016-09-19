@@ -270,12 +270,18 @@ class Tetris {
 
     // Back to menu
     if (keyname == 'escape') {
-
+      if (this.gameLoopHandler) {
+        clearInterval(this.gameLoopHandler);
+        this.gameLoopHandler = null;
+        // TODO: Show the menu
+      }
     }
 
     // Start game
     if (keyname == 'return') {
       if (!this.gameLoopHandler) {
+        // TODO: Check if we are in menu then start the GameLoop
+        // TODO: Close the menu
         this.init();
         this.createBlock();
 
@@ -357,18 +363,6 @@ class Tetris {
         }
 
         game.controlBlock(keyname);
-
-        //Stop gameloop and show the menu with ESC key
-        if (event.keyCode == '27') {
-          if (gameLoopHandler) {
-            clearInterval(gameLoopHandler);
-            gameLoopHandler = null;
-          }
-        }
-
-        if(gameLoopHandler)
-          game.controlBlock(event.keyCode);
-
       });
 
     }
