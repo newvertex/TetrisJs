@@ -116,7 +116,9 @@ class Tetris {
       if (this.output)
         this.output.innerHTML = content;
     } else {  // Write in console
+      process.stdout.write('\x1Bc');  // ClearScreen
       process.stdout.write(content);
+      process.stdout.write('\n `q` to Quit!');
     }
 
     return content;
@@ -347,6 +349,7 @@ class Tetris {
         }
       } else {  // Console menu
         // TODO: A simple menu on here to show on console
+        process.stdout.write('\x1Bc');  // ClearScreen
         if (show) {
           game.menuHandler = 'x';
           process.stdout.write("Press Enter to Start game\n `q` to quit!");
