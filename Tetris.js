@@ -270,7 +270,7 @@ class Tetris {
 
     // Back to menu
     if (keyname == 'escape') {
-      if (this.gameLoopHandler && ! this.menuHandler) {
+      if (!this.menuHandler) {
         clearInterval(this.gameLoopHandler);
         this.gameLoopHandler = null;
 
