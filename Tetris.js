@@ -270,18 +270,22 @@ class Tetris {
 
     // Back to menu
     if (keyname == 'escape') {
-      if (this.gameLoopHandler) {
+      if (this.gameLoopHandler && ! this.menuHandler) {
         clearInterval(this.gameLoopHandler);
         this.gameLoopHandler = null;
-        // TODO: Show the menu
+
+        // Show the menu
+        this.showMenu();
       }
     }
 
     // Start game
     if (keyname == 'return') {
-      if (!this.gameLoopHandler) {
-        // TODO: Check if we are in menu then start the GameLoop
-        // TODO: Close the menu
+      // Check if we are in menu then start the GameLoop
+      if (this.menuHandler && !this.gameLoopHandler) {
+        // Close the menu
+        this.showMenu(false);
+
         this.init();
         this.createBlock();
 
@@ -307,36 +311,41 @@ class Tetris {
   static play () {
     let game = new Tetris();
 
+    //Blink start text like menu
+    game.showMenu = function showMenu(show=true) {
+      // Document menu
+      if (typeof(document) !== 'undefined') {
+        let startText = document.querySelector('#startText');
+        if (show) {
+          if (startText) {
+            startText.style.color = startText.style.color== 'gray' ? 'black':'gray';
+          } else {
+            startText = document.createElement('h3');
+            startText.id = 'startText';
+            startText.innerHTML = 'Press Enter to start game';
+            view.innerHTML = '';
+            view.appendChild(startText);
+          }
+
+          game.menuHandler = setTimeout(showMenu, 500);
+        } else {
+          clearTimeout(game.menuHandler);
+          game.menuHandler = null;
+          if (startText)
+            startText.remove();
+        }
+      } else {  // Console menu
+        // TODO: A simple menu on here to show on console
+      }
+    }
+
     //Check if can access to document(Run inside browser)
     if(typeof(document) !== 'undefined') {
-      var menuHandler = null; //Menu handler to settimeout
-      var gameLoopHandler = null; //GameLoop Handler for setinterval
-      game.output = document.querySelector('#view');  //Main output section
+      //Main output tag element for draw method
+      game.output = document.querySelector('#view');
 
-      //Blink start text like menu
-      function showMenu(show=true) {
-        if (typeof(document) !== 'undefined') {
-          let startText = document.querySelector('#startText');
-          if (show) {
-            if (startText) {
-              startText.style.color = startText.style.color== 'gray' ? 'black':'gray';
-            } else {
-              startText = document.createElement('h3');
-              startText.id = 'startText';
-              startText.innerHTML = 'Press Enter to start game';
-              view.innerHTML = '';
-              view.appendChild(startText);
-            }
-
-            menuHandler = setTimeout(showMenu, 500);
-          } else {
-            clearTimeout(menuHandler);
-            menuHandler = null;
-            startText.remove();
-          }
-        }
-      }
-      // showMenu();
+      // Show menu on start the game
+      game.showMenu();
 
       document.addEventListener('keydown', function (event) {
         let keyname = '';
