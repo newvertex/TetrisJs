@@ -1,9 +1,6 @@
 # TetrisJs
 Tetris game in JavaScript  
 
-You can play the game on this page : http://newvertex.ir/js/tetrisjs/  
-
-
 You can play game on web page with just simple HTML or play it on terminal with Node.Js  
 
 To run on terminal just pass the file to Node.js:  
